@@ -21,6 +21,7 @@
     var ktora_odpowiedz=0; //uzywane do wpisywania poprawnych odpowiezi do okienek(automnatka)
     var wylosowaneID; //uzywane do getelementbyid przy wpisywaniu odp do okienek(automatyka)
     var poprzednie_wybrane=1;
+    var ilepoprawnychodpowiedzizrzedu=0;//to co sama nazwa mowi
     var wylosowana_liczba=(Math.floor(Math.random()*5)+1);
     var i=0;
     while(i<2)
@@ -42,12 +43,19 @@
         i++;
     }
 
+
     document.addEventListener("click", (event)=>{
         let zdobyteID= event.target.id;
         zmien(zdobyteID);
     });
 
     function zmien(id){
+        if(id_odpowiedzi_uzytkownika.length==0 && id[4]==1){
+            for(var lk=1; lk<6; lk++){
+                document.getElementById("POLE1_"+lk).style.backgroundColor="lightgrey";
+                lk++;
+            }
+        }
         var czy_juz_bylo=false;
         if(id[0]=='P')
         {
@@ -61,22 +69,53 @@
             if(czy_juz_bylo==false){
                 if(ktoreteraz==0){
                     if(id[4]==poprzednie_wybrane){
+                        var zmiananagrey=1;
+                        while(zmiananagrey<6){                          
+                            if(id_odpowiedzi_uzytkownika.includes("POLE"+poprzednie_wybrane+"_"+zmiananagrey)==false){
+                                document.getElementById("POLE"+poprzednie_wybrane+"_"+zmiananagrey).style.backgroundColor="lightgrey";
+                            }
+                            zmiananagrey++;
+                        }
                         document.getElementById(id).style.backgroundColor="indianred";
                         ktoreteraz=1;
                         poprzednie_wybrane=id[6];
                         odpowiedzi_uzytkownika.push(document.getElementById(id).textContent);
                         id_odpowiedzi_uzytkownika.push(id);
+                        var d=1;
+                        while(d<6){                          
+                            if(id_odpowiedzi_uzytkownika.includes("POLE"+d+"_"+poprzednie_wybrane)==false){
+                                document.getElementById("POLE"+d+"_"+poprzednie_wybrane).style.backgroundColor="lightgreen";
+                            }
+                            d++;
+                        }
+
                     }
                 }else if(ktoreteraz==1){
                     if(id[6]==poprzednie_wybrane){
+                        var zmiananagrey=1;
+                        while(zmiananagrey<6){                          
+                            if(id_odpowiedzi_uzytkownika.includes("POLE"+zmiananagrey+"_"+poprzednie_wybrane)==false){
+                                document.getElementById("POLE"+zmiananagrey+"_"+poprzednie_wybrane).style.backgroundColor="lightgrey";
+                            }
+                            zmiananagrey++;
+                        }
                         document.getElementById(id).style.backgroundColor="indianred";
                         ktoreteraz=0;
                         poprzednie_wybrane=id[4];
                         odpowiedzi_uzytkownika.push(document.getElementById(id).textContent);
                         id_odpowiedzi_uzytkownika.push(id);
+                        var d=1;
+                        while(d<6){                          
+                            if(id_odpowiedzi_uzytkownika.includes("POLE"+poprzednie_wybrane+"_"+d)==false){
+                                document.getElementById("POLE"+poprzednie_wybrane+"_"+d).style.backgroundColor="lightgreen";
+                            }
+                            d++;
+                        }
                     }
                 }
+                console.log(ktoreteraz, poprzednie_wybrane);
                 czywygral(); 
+                czypoprawnyprzycisk();
             }
         }
     }
@@ -93,3 +132,16 @@
         }
     }
 
+function czypoprawnyprzycisk(){
+        if(odpowiedzi_uzytkownika[odpowiedzi_uzytkownika.length-1]==poprawna_odpowiedz[ilepoprawnychodpowiedzizrzedu]){
+            document.getElementById("odpowiedz_"+ilepoprawnychodpowiedzizrzedu).style.backgroundColor="lightgreen";
+            ilepoprawnychodpowiedzizrzedu++;
+        }
+        else{
+            ilepoprawnychodpowiedzizrzedu=0;
+            for(var cd=0; cd<4; cd++){
+                document.getElementsByClassName("kratki_odpowiedzi")[cd].style.backgroundColor="lightgrey";
+            }
+            
+        }
+}
